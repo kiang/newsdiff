@@ -11,7 +11,7 @@ foreach(glob($path . '/models/*.php') AS $m) {
     $p = pathinfo($m);
     $o = new $p['filename'];
     if($o instanceof Pix_Table) {
-        $o->dropTable();
+        //$o->dropTable();
         $o->createTable();
     }
 }
