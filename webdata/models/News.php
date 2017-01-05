@@ -6,7 +6,7 @@ class NewsRow extends Pix_Table_Row
     {
         $sources = array();
         foreach ($this->infos as $news_info) {
-            $table_name = "news_raw_" . date('Ym', $news_info->time);
+            $table_name = "news_raw";
             $table = NewsRaw::getTable();
             $db = NewsRaw::getDb();
             $res = $db->query("SELECT * FROM {$table_name} WHERE news_id = {$news_info->news_id} AND `time` = {$news_info->time}");
@@ -29,7 +29,7 @@ class NewsRow extends Pix_Table_Row
         $diff_infos = array();
 
         for ($time = $start_month; $time <= $end_month; $time = strtotime('+1 month', $time)) {
-            $table_name = 'news_raw_' . date('Ym', $time);
+            $table_name = 'news_raw';
             $table = NewsRaw::getTable();
             $db = NewsRaw::getDb();
             $res = $db->query("SELECT * FROM {$table_name} WHERE `news_id` = {$this->id} ORDER BY `time` ASC");
