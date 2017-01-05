@@ -211,6 +211,7 @@ class Crawler {
             $delta = microtime(true) - $start;
             if ($delta > 60) { // 最多三分鐘
                 error_log("updateContent too long... skip");
+                print_r(curl_multi_info_read($mh));
                 $skip = true;
                 break;
             }
