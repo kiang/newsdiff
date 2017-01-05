@@ -30,6 +30,7 @@ $db->host = $matches[3];
 $db->username = $matches[1];
 $db->password = $matches[2];
 $db->dbname = $matches[4];
+$db->charset = 'utf8mb4';
 $config = new StdClass;
 $config->master = $config->slave = $db;
 Pix_Table::setDefaultDb(new Pix_Table_Db_Adapter_MysqlConf(array($config)));
