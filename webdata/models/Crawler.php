@@ -186,6 +186,8 @@ class Crawler
         foreach ($fetching_news as $id => $news) {
             $url = self::standardURL($news->url);
             list($url, $host) = self::roundRobinURL($url);
+            
+            error_log('init ' . $url);
 
             $curl = curl_init($url);
             if (!is_null($host)) {
