@@ -20,6 +20,8 @@ class Crawler
 
     public static function roundRobinURL($url)
     {
+        return array($url, null);
+        // prevent using ip
         if (!preg_match('#(https?://)([^/]*)(.*)#', $url, $matches)) {
             return array($url, null);
         }
