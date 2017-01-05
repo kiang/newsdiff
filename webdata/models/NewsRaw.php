@@ -120,10 +120,12 @@ class NewsRaw extends Pix_Table {
             error_log('parser error:' . $url);
         } else {
             if (empty($ret->title)) {
+                $ret->title = '--';
                 error_log('找不到標題:' . $url);
             }
 
             if (empty($ret->body)) {
+                $ret->body = '--';
                 error_log('找不到內容:' . $url);
             }
         }
