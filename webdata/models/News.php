@@ -40,7 +40,7 @@ class NewsRow extends Pix_Table_Row
                     if (strpos($e->getMessage(), 'article id 不同') === 0) {
                         continue;
                     }
-                    error_log("處理 {$this->url} 錯誤: " . $e->getMessage());
+                    error_log("處理 {$this->url} 錯誤(News:1): " . $e->getMessage());
                     throw $e;
                 }
                 if (count($diff_infos) and $diff_infos[0]['title'] == $diff_infos[0]['body'] and in_array($diff_infos[0]['title'], array('', 0, 404, '無法判斷的內容', '503'))) {
@@ -96,7 +96,7 @@ class NewsRow extends Pix_Table_Row
         try {
             Crawler::updateContent($this, $body, $header);
         } catch (Exception $e) {
-            error_log("處理 {$this->url} 錯誤: " . $e->getMessage());
+            error_log("處理 {$this->url} 錯誤(News:2): " . $e->getMessage());
         }
 
     }

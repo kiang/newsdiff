@@ -271,7 +271,7 @@ class Crawler
             try {
                 self::updateContent($news, $body, $header . "\n" . json_encode($info) . "\nerrno=" . $errno);
             } catch (Exception $e) {
-                error_log("處理 {$news->url} 錯誤: " . $e->getMessage());
+                error_log("處理 {$news->url} 錯誤(Crawler:1): " . $e->getMessage());
             }
         }
         $spent = microtime(true) - $start;
