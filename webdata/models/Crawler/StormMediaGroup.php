@@ -34,7 +34,7 @@ class Crawler_StormMediaGroup {
     public static function parse($body) {
         $ret = new StdClass;
         $doc = new DOMDocument('1.0', 'UTF-8');
-        @$doc->loadHTML($body);
+        @$doc->loadHTML(str_replace('<meta charset="UTF-8">', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body));
 
         $ret->title = trim($doc->getElementsByTagName('title')->item(0)->nodeValue);
         $ret->body = trim($doc->getElementsByTagName('article')->item(0)->nodeValue);
