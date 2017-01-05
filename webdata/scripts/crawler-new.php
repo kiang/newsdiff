@@ -24,7 +24,7 @@ $crawlers = array(
 
 $start = microtime(true);
 $insert_count = 0;
-$max_insert = 500;
+$max_insert = 50000;
 $keys = array_keys($crawlers);
 // 隨機跑新聞來源，避免在前面的總是優先被跑到
 shuffle($keys);
@@ -41,7 +41,7 @@ foreach ($keys as $id) {
     }
 
     try {
-        list($update, $insert) = call_user_func(array($class, 'crawl'), $max_insert - $insert_count);
+        list($update, $insert) = call_user_func(array($class, 'crawl'), $max_insert);
     } catch (Exception $e) {
         error_log("$class failed: " . $e->getMessage());
         continue;
