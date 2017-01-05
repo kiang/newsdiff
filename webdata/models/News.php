@@ -134,7 +134,7 @@ class News extends Pix_Table
         return News::find_by_normalized_crc32(crc32($ret->normalized_id));
     }
 
-    public function addNews($url, $source)
+    public static function addNews($url, $source)
     {
         $ret = URLNormalizer::query($url);
         if (!$ret) {
