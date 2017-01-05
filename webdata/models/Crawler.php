@@ -180,8 +180,6 @@ class Crawler {
             $url = self::standardURL($news->url);
             list($url, $host) = self::roundRobinURL($url);
 
-            error_log('init ' . $url);
-
             $curl = curl_init($url);
             if (!is_null($host)) {
                 curl_setopt($curl, CURLOPT_HTTPHEADER, array('Host: ' . $host));
