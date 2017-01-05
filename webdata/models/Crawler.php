@@ -20,8 +20,10 @@ class Crawler
 
     public static function roundRobinURL($url)
     {
-        return array($url, null);
-        // prevent using ip
+        if(false !== strpos($url, 'storm.mg')) {
+            // prevent using ip for storm.mg
+            return array($url, null);
+        }
         if (!preg_match('#(https?://)([^/]*)(.*)#', $url, $matches)) {
             return array($url, null);
         }
