@@ -114,10 +114,18 @@ class NewsRaw extends Pix_Table {
                 throw new Exception('unknown host: ' . $url);
         }
 
-        if (!$ret->title or ! $ret->body) {
+        if (!is_object($ret)) {
             $ret = new StdClass;
-            $ret->title = $ret->body = '無法判斷的內容';
-            error_log('找不到內容:' . $url);
+            $ret->title = $ret->body = '--';
+            error_log('parser error:' . $url);
+        } else {
+            if (empty($ret->title)) {
+                error_log('找不到標題:' . $url);
+            }
+
+            if (empty($ret->body)) {
+                error_log('找不到內容:' . $url);
+            }
         }
 
         return $ret;
