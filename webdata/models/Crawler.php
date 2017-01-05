@@ -1,26 +1,25 @@
 <?php
 
-class Crawler
-{
-    public static function standardURL($url)
-    {
-        $url = preg_replace_callback('/[^\x00-\xff]*/u', function($m) { return urlencode($m[0]); }, $url);
+class Crawler {
+
+    public static function standardURL($url) {
+        $url = preg_replace_callback('/[^\x00-\xff]*/u', function($m) {
+            return urlencode($m[0]);
+        }, $url);
         return $url;
     }
 
     protected static $_record_cache = array();
 
-    public static function dns_get_record($host)
-    {
+    public static function dns_get_record($host) {
         if (!array_key_exists($host, self::$_record_cache)) {
             self::$_record_cache[$host] = dns_get_record($host, DNS_A);
         }
         return self::$_record_cache[$host];
     }
 
-    public static function roundRobinURL($url)
-    {
-        if(false !== strpos($url, 'storm.mg')) {
+    public static function roundRobinURL($url) {
+        if (false !== strpos($url, 'storm.mg')) {
             // prevent using ip for storm.mg
             return array($url, null);
         }
@@ -38,11 +37,10 @@ class Crawler
 
     protected static $_last_fetch = null;
 
-    public static function getBody($url, $wait = 0.5, $throw_exception = true, $retry = 3)
-    {
+    public static function getBody($url, $wait = 0.5, $throw_exception = true, $retry = 3) {
         $url = self::standardURL($url);
         // 0.5 秒只抓一個網頁，以免太快被擋
-        while (!is_null(self::$_last_fetch) and (microtime(true) - self::$_last_fetch) < $wait) {
+        while (!is_null(self::$_last_fetch) and ( microtime(true) - self::$_last_fetch) < $wait) {
             usleep(1000);
         }
 
@@ -78,8 +76,7 @@ class Crawler
         return $content;
     }
 
-    public static function updateContent($news, $content, $header)
-    {
+    public static function updateContent($news, $content, $header) {
         $now = time();
 
         if (preg_match('/content="text\/html; charset=big5/', $content)) {
@@ -121,8 +118,8 @@ class Crawler
     }
 
     protected static $_valid_cache = array();
-    public static function validSource($source_id)
-    {
+
+    public static function validSource($source_id) {
         if (!array_key_exists($source_id, self::$_valid_cache)) {
             self::$_valid_cache[$source_id] = KeyValue::get('stop-source-' . $source_id);
         }
@@ -133,13 +130,11 @@ class Crawler
         return true;
     }
 
-    public static function updateAllRaw()
-    {
+    public static function updateAllRaw() {
         self::updatePart(1, 1);
     }
 
-    public static function updatePart($part, $total)
-    {
+    public static function updatePart($part, $total) {
         $now = time();
         $fetching_news = array();
         $count = 0;
@@ -149,7 +144,7 @@ class Crawler
         $alone_sources = array(
             10 => true, // BCC 中廣新聞
             14 => true, // 民視新聞
-            2 => true,  // 中時
+            2 => true, // 中時
         );
         $total = intval($total);
         $part = intval($part);
@@ -188,7 +183,7 @@ class Crawler
         foreach ($fetching_news as $id => $news) {
             $url = self::standardURL($news->url);
             list($url, $host) = self::roundRobinURL($url);
-            
+
             error_log('init ' . $url);
 
             $curl = curl_init($url);
@@ -291,8 +286,7 @@ class Crawler
         }
     }
 
-    public static function getDomByNameAndClass($node, $name, $class)
-    {
+    public static function getDomByNameAndClass($node, $name, $class) {
         foreach ($node->getElementsByTagName($name) as $dom) {
             if (in_array($class, explode(' ', $dom->getAttribute('class')))) {
                 return $dom;
@@ -301,12 +295,12 @@ class Crawler
         return null;
     }
 
-    public static function getTextFromDom($node)
-    {
+    public static function getTextFromDom($node) {
         $ret = '';
         if ($node->nodeType == XML_TEXT_NODE) {
             $ret .= $node->nodeValue;
         } elseif ($node->nodeType == XML_COMMENT_NODE) {
+            
         } elseif ($node->nodeType == XML_ELEMENT_NODE and strtolower($node->nodeName) == 'br') {
             $ret .= "\n";
         } elseif ($node->nodeType == XML_ELEMENT_NODE and strtolower($node->nodeName) == 'img') {
@@ -322,7 +316,6 @@ class Crawler
                 $ret .= self::getTextFromDom($child_node);
             }
             $ret = trim($ret) . '</a>';
-
         } elseif ($node->nodeType == XML_ELEMENT_NODE and strtolower($node->nodeName) == 'figure') {
             if ($node->getElementsByTagName('img')->item(0)) {
                 $ret .= $node->getElementsByTagName('img')->item(0)->getAttribute('src') . "\n";
@@ -340,4 +333,5 @@ class Crawler
         }
         return $ret;
     }
+
 }

@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_CTS
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_CTS {
+
+    public static function crawl($insert_limit) {
         $content = Crawler::getBody('http://news.cts.com.tw/real');
         $content .= Crawler::getBody('http://news.cts.com.tw/real/index2.html');
         $content .= Crawler::getBody('http://news.cts.com.tw/real/index3.html');
@@ -24,8 +23,7 @@ class Crawler_CTS
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $doc = new DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML($body);
         $ret = new StdClass;
@@ -54,4 +52,5 @@ class Crawler_CTS
         $ret->body = Crawler::getTextFromDom($doc->getElementById('article'));
         return $ret;
     }
+
 }

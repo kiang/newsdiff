@@ -1,9 +1,8 @@
 <?php
 
-class KeyValue extends Pix_Table
-{
-    public function init()
-    {
+class KeyValue extends Pix_Table {
+
+    public function init() {
         $this->_name = 'key_value';
         $this->_primary = 'key';
 
@@ -11,13 +10,11 @@ class KeyValue extends Pix_Table
         $this->_columns['value'] = array('type' => 'text');
     }
 
-    public static function get($key)
-    {
+    public static function get($key) {
         return KeyValue::find(strval($key))->value;
     }
 
-    public static function set($key, $value)
-    {
+    public static function set($key, $value) {
         try {
             KeyValue::insert(array(
                 'key' => $key,
@@ -27,4 +24,5 @@ class KeyValue extends Pix_Table
             KeyValue::search(array('key' => $key))->update(array('value' => $value));
         }
     }
+
 }

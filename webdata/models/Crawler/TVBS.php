@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_TVBS
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_TVBS {
+
+    public static function crawl($insert_limit) {
         $urls = array(
             'http://news.tvbs.com.tw/opencms/system/modules/com.thesys.project.tvbs/pages/scheduler/ranking-news-daily.jsp',
             'http://news.tvbs.com.tw/opencms/system/modules/com.thesys.project.tvbs/pages/scheduler/ranking-news-weekly.jsp',
@@ -34,8 +33,7 @@ class Crawler_TVBS
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $doc = new DOMDocument('1.0', 'UTF-8');
         $body = str_replace('<meta charest="utf-8">', '<meta charest="utf-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
 
@@ -67,4 +65,5 @@ class Crawler_TVBS
         }
         return $ret;
     }
+
 }

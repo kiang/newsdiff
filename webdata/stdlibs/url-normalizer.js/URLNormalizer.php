@@ -1,9 +1,8 @@
 <?php
 
-class URLNormalizer
-{
-    public static function replaceVar($str, $vars, $query)
-    {
+class URLNormalizer {
+
+    public static function replaceVar($str, $vars, $query) {
         return preg_replace_callback('/{\$([^}]*)}/', function($matches) use ($vars, $query) {
             if (preg_match('/^[0-9]*$/', $matches[1])) {
                 return $vars[intval($matches[1])];
@@ -14,8 +13,7 @@ class URLNormalizer
         }, $str);
     }
 
-    public static function query($url)
-    {
+    public static function query($url) {
         $csvmap = self::getCSVMap();
 
         $url_parts = parse_url($url);
@@ -36,8 +34,7 @@ class URLNormalizer
 
     protected static $_csvmap = null;
 
-    public static function getCSVMap()
-    {
+    public static function getCSVMap() {
         if (!is_null(self::$_csvmap)) {
             return self::$_csvmap;
         }
@@ -50,4 +47,5 @@ class URLNormalizer
         }
         return self::$_csvmap = $csvmap;
     }
+
 }

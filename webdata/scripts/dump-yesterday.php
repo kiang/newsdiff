@@ -7,13 +7,12 @@ Pix_Table::$_save_memory = true;
 // 列出近十天的所有新聞
 // 並把昨天起七天的上傳到 dropbox
 
-class Dumper
-{
+class Dumper {
+
     protected $fps = array();
     protected $fp_time = null;
 
-    public function outputIDS($ids)
-    {
+    public function outputIDS($ids) {
         $chunked_ids = array_chunk($ids, 100, true);
         foreach ($chunked_ids as $part_ids) {
             $showed = array();
@@ -47,8 +46,7 @@ class Dumper
         }
     }
 
-    public function main()
-    {
+    public function main() {
         $ids = array();
 
         foreach (News::search(1)->order('id DESC')->volumemode(1000) as $news) {
@@ -87,8 +85,8 @@ class Dumper
         system("rm /tmp/newsdump*");
         S3Lib::buildIndex("s3://ronnywang-newsdiff/");
     }
-}
 
+}
 
 $d = new Dumper;
 $d->main();

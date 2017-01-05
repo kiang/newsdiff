@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_Appledaily
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_Appledaily {
+
+    public static function crawl($insert_limit) {
         $urls = array(
             'http://www.appledaily.com.tw',
             'http://www.appledaily.com.tw/appledaily/todayapple',
@@ -44,8 +43,7 @@ class Crawler_Appledaily
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         if ('<script>alert("該則即時新聞不存在 !");location.href="/";</script>' == trim($body)) {
             $ret = new StdClass;
             $ret->title = $ret->body = 404;
@@ -80,6 +78,5 @@ class Crawler_Appledaily
         }
         return $ret;
     }
-
 
 }

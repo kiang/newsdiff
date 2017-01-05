@@ -5,16 +5,16 @@ $this->title = $first_info->title . '@' . $sources[$this->news->source] . "::";
 ?>
 <?= $this->partial('/common/header.phtml', $this) ?>
 <style>
-del {
+    del {
         text-decoration: line-through;
         color: #b30000;
         background: #fadad7;
-}
-ins {
+    }
+    ins {
         background: #eaf2c2;
         color: #406619;
         text-decoration: none;
-}
+    }
 </style>
 <script src="/static/jsdiff-master/diff.js"></script>
 <h2>網址: <?= $this->escape(urldecode($this->news->url)) ?></h2>
@@ -24,80 +24,84 @@ ins {
 內容：<br>
 <pre class="body"><?= $this->escape($first_info->body) ?></pre>
 <?php foreach ($this->news->infos->order('time ASC') as $info) { ?>
-<?php if ($info->time == $first_info->time) { continue; } ?>
-<hr>
-<a name="<?= $info->time ?>"></a>
-修改時間: <?= date('c', $info->time) ?><br>
-標題：<span class="title"><?= $this->escape($info->title) ?></span><br>
-內容：<br>
-<pre class="body"><?= $this->escape($info->body) ?></pre>
+    <?php
+    if ($info->time == $first_info->time) {
+        continue;
+    }
+    ?>
+    <hr>
+    <a name="<?= $info->time ?>"></a>
+    修改時間: <?= date('c', $info->time) ?><br>
+    標題：<span class="title"><?= $this->escape($info->title) ?></span><br>
+    內容：<br>
+    <pre class="body"><?= $this->escape($info->body) ?></pre>
 <?php } ?>
 <script>
 
-function changed(a, b) {
-    var diff = JsDiff['diffChars'](a, b);
-    var fragment = document.createDocumentFragment();
-    for (var i=0; i < diff.length; i++) {
+    function changed(a, b) {
+        var diff = JsDiff['diffChars'](a, b);
+        var fragment = document.createDocumentFragment();
+        for (var i = 0; i < diff.length; i++) {
 
-        if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
-            var swap = diff[i];
-            diff[i] = diff[i + 1];
-            diff[i + 1] = swap;
+            if (diff[i].added && diff[i + 1] && diff[i + 1].removed) {
+                var swap = diff[i];
+                diff[i] = diff[i + 1];
+                diff[i + 1] = swap;
+            }
+
+            var node;
+            if (diff[i].removed) {
+                node = document.createElement('del');
+                node.appendChild(document.createTextNode(diff[i].value));
+            } else if (diff[i].added) {
+                node = document.createElement('ins');
+                node.appendChild(document.createTextNode(diff[i].value));
+            } else {
+                node = document.createTextNode(diff[i].value);
+            }
+            fragment.appendChild(node);
         }
 
-        var node;
-        if (diff[i].removed) {
-            node = document.createElement('del');
-            node.appendChild(document.createTextNode(diff[i].value));
-        } else if (diff[i].added) {
-            node = document.createElement('ins');
-            node.appendChild(document.createTextNode(diff[i].value));
-        } else {
-            node = document.createTextNode(diff[i].value);
-        }
-        fragment.appendChild(node);
+        return fragment;
     }
 
-    return fragment;
-}
-
-var count_diff = function(){
-    var last_body = null;
-    $('.body').each(function(){
-        var $self = $(this);
-        var current_body = $self.text();
-        $self.data('content', current_body);
-        if (null !== last_body) {
-            $self.html(changed(last_body, current_body));
-        }
-        last_body = current_body;
-    });
-    var last_title = null;
-    $('.title').each(function(){
-        var $self = $(this);
-        var current_title = $self.text();
-        $self.data('content', current_title);
-        if (null !== last_title) {
-            $self.html(changed(last_title, current_title));
-        }
-        last_title = current_title;
-    });
-    show_diff = true;
-};
-
-var show_diff;
-count_diff();
-
-$('.title, .body').click(function(){
-    if (show_diff) {
-        $('.title, .body').each(function(){
-            $(this).text($(this).data('content'));
+    var count_diff = function () {
+        var last_body = null;
+        $('.body').each(function () {
+            var $self = $(this);
+            var current_body = $self.text();
+            $self.data('content', current_body);
+            if (null !== last_body) {
+                $self.html(changed(last_body, current_body));
+            }
+            last_body = current_body;
         });
-        show_diff = false;
-    } else {
-        count_diff();
-    }
-});
+        var last_title = null;
+        $('.title').each(function () {
+            var $self = $(this);
+            var current_title = $self.text();
+            $self.data('content', current_title);
+            if (null !== last_title) {
+                $self.html(changed(last_title, current_title));
+            }
+            last_title = current_title;
+        });
+        show_diff = true;
+    };
+
+    var show_diff;
+    count_diff();
+
+    $('.title, .body').click(function () {
+        if (show_diff) {
+            $('.title, .body').each(function () {
+                $(this).text($(this).data('content'));
+            });
+            show_diff = false;
+        } else {
+            count_diff();
+        }
+    });
 
 </script>
 <?= $this->partial('/common/footer.phtml', $this) ?>

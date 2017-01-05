@@ -1,11 +1,10 @@
 <?php
 
-class Crawler_StormMediaGroup
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_StormMediaGroup {
+
+    public static function crawl($insert_limit) {
         $urls = array();
-        for ($i=1; $i<=4; $i++) {
+        for ($i = 1; $i <= 4; $i++) {
             $urls[] = 'http://www.storm.mg/articles/' . $i;
         }
 
@@ -32,8 +31,7 @@ class Crawler_StormMediaGroup
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $ret = new StdClass;
         $doc = new DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML($body);
@@ -43,4 +41,5 @@ class Crawler_StormMediaGroup
 
         return $ret;
     }
+
 }

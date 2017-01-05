@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_TTV
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_TTV {
+
+    public static function crawl($insert_limit) {
         $content = Crawler::getBody('http://www.ttv.com.tw/news/');
         preg_match_all('#/[0-9]+/[0-9]+/[0-9]+/[0-9]+[0-9A-Z]\.htm#', $content, $matches);
         $links = array_unique($matches[0]);
@@ -19,8 +18,7 @@ class Crawler_TTV
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $ret = new StdClass;
 
         $doc = new DOMDocument('1.0', 'UTF-8');
@@ -48,4 +46,5 @@ class Crawler_TTV
         }
         return $ret;
     }
+
 }

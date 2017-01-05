@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_BCC
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_BCC {
+
+    public static function crawl($insert_limit) {
         $content = Crawler::getBody('http://www.bcc.com.tw/news');
         preg_match_all('#newsView\.[0-9A-Z-z]*#', $content, $matches);
         $links = array_unique($matches[0]);
@@ -19,8 +18,7 @@ class Crawler_BCC
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $ret = new StdClass;
         if (preg_match('#目前無相關新聞$#', trim($body))) {
             $ret = new StdClass;
@@ -55,4 +53,5 @@ class Crawler_BCC
         $ret->body = trim($ret->body);
         return $ret;
     }
+
 }

@@ -1,9 +1,8 @@
 <?php
 
-class ApiController extends Pix_Controller
-{
-    public function newsAction()
-    {
+class ApiController extends Pix_Controller {
+
+    public function newsAction() {
         $url = $_GET['url'];
 
         if (!$news = News::findByURL($url)) {
@@ -20,4 +19,5 @@ class ApiController extends Pix_Controller
         }
         return $this->json($infos);
     }
+
 }

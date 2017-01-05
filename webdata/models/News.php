@@ -1,9 +1,8 @@
 <?php
 
-class NewsRow extends Pix_Table_Row
-{
-    public function getRaws()
-    {
+class NewsRow extends Pix_Table_Row {
+
+    public function getRaws() {
         $sources = array();
         foreach ($this->infos as $news_info) {
             $table_name = "news_raw";
@@ -18,8 +17,7 @@ class NewsRow extends Pix_Table_Row
         return $sources;
     }
 
-    public function regenerateInfo()
-    {
+    public function regenerateInfo() {
         //$this->infos->delete();
         $start_month = mktime(0, 0, 0, date('m', $this->created_at), 1, date('Y', $this->created_at));
         $end_month = mktime(0, 0, 0, date('m', $this->last_fetch_at), 1, date('Y', $this->last_fetch_at));
@@ -71,8 +69,7 @@ class NewsRow extends Pix_Table_Row
         $this->update(array('last_changed_at' => count($diff_infos) > 1 ? $diff_infos[0]['time'] : 0));
     }
 
-    public function updateNews()
-    {
+    public function updateNews() {
         $curl = curl_init($this->url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
@@ -98,14 +95,13 @@ class NewsRow extends Pix_Table_Row
         } catch (Exception $e) {
             error_log("處理 {$this->url} 錯誤(News:2): " . $e->getMessage());
         }
-
     }
+
 }
 
-class News extends Pix_Table
-{
-    public function init()
-    {
+class News extends Pix_Table {
+
+    public function init() {
         $this->_name = 'news';
         $this->_primary = 'id';
         $this->_rowClass = 'NewsRow';
@@ -122,11 +118,9 @@ class News extends Pix_Table
         $this->_columns['error_count'] = array('type' => 'tinyint', 'default' => 0);
 
         $this->_relations['infos'] = array('rel' => 'has_many', 'type' => 'NewsInfo', 'foreign_key' => 'news_id', 'delete' => true);
-
     }
 
-    public function findByURL($url)
-    {
+    public function findByURL($url) {
         $ret = URLNormalizer::query($url);
         if (!$ret) {
             return;
@@ -134,8 +128,7 @@ class News extends Pix_Table
         return News::find_by_normalized_crc32(crc32($ret->normalized_id));
     }
 
-    public static function addNews($url, $source)
-    {
+    public static function addNews($url, $source) {
         $ret = URLNormalizer::query($url);
         if (!$ret) {
             error_log("URLNormalizer 失敗: {$url}");
@@ -156,13 +149,13 @@ class News extends Pix_Table
                 'last_fetch_at' => 0,
             ));
         } catch (Pix_Table_DuplicateException $e) {
+            
         }
 
         return 1;
     }
 
-    public static function getSources()
-    {
+    public static function getSources() {
         return array(
             1 => '蘋果',
             2 => '中時',
@@ -182,4 +175,5 @@ class News extends Pix_Table
             16 => '風傳媒',
         );
     }
+
 }

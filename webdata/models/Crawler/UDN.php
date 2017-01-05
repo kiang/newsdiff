@@ -1,10 +1,9 @@
 <?php
 
-class Crawler_UDN
-{
-    public static function crawl($insert_limit)
-    {
-        for ($i = 1; $i <10; $i ++) {
+class Crawler_UDN {
+
+    public static function crawl($insert_limit) {
+        for ($i = 1; $i < 10; $i ++) {
             $content .= Crawler::getBody("http://udn.com/rssfeed/news/1/{$i}?ch=news");
         }
         preg_match_all('#http://udn.com/news/story/[0-9]*/[0-9]*#', $content, $matches);
@@ -18,8 +17,7 @@ class Crawler_UDN
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $ret = new StdClass;
         if (false !== strpos($body, '<link rel="canonical" href="http://udn.com/news/e404"/>')) {
             $ret->title = $ret->body = 404;
@@ -42,4 +40,5 @@ class Crawler_UDN
         }
         return $ret;
     }
+
 }

@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_Libertytimes
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_Libertytimes {
+
+    public static function crawl($insert_limit) {
         // http://www.libertytimes.com.tw/2013/new/aug/13/today-t3.htm
         // http://iservice.libertytimes.com.tw/liveNews/news.php?no=852779&type=%E7%A4%BE%E6%9C%83
         // http://news.ltn.com.tw/list/BreakingNews 即時新聞
@@ -37,8 +36,7 @@ class Crawler_Libertytimes
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         if (strpos($body, '<div class="newsbox"><ul><li>網址錯誤</li></ul></div>')) {
             $ret = new StdClass;
             $ret->title = $ret->body = 404;
@@ -94,10 +92,10 @@ class Crawler_Libertytimes
                 $dom = $doc->getElementById('fb-root');
                 $ret->title = $btitle_dom->nodeValue;
                 while ($dom = $dom->nextSibling) {
-                    if ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'share boxTitle') { 
+                    if ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'share boxTitle') {
                         continue;
                     }
-                    if ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'elselist boxTitle') { 
+                    if ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'elselist boxTitle') {
                         continue;
                     }
                     $ret->body .= Crawler::getTextFromDom($dom);
@@ -106,7 +104,7 @@ class Crawler_Libertytimes
             }
         }
 
-        if (!$doc->getElementById('newsti')){
+        if (!$doc->getElementById('newsti')) {
             // 新版
             if (strpos($body, '無此則新聞') and $doc->getElementsByTagName('title')->item(0)->nodeValue == '自由時報電子報') {
                 $ret = new StdClass;
@@ -159,7 +157,7 @@ class Crawler_Libertytimes
                             }
                         } elseif ($dom->nodeName == 'script') {
                             continue;
-                        } elseif ($dom->nodeName == 'p' or ($dom->nodeName == 'span' and $class == 'ph_b')) {
+                        } elseif ($dom->nodeName == 'p' or ( $dom->nodeName == 'span' and $class == 'ph_b')) {
                             $ret->body = trim($ret->body . "\n" . trim(Crawler::getTextFromDom($dom)));
                             continue;
                         } elseif ('h4' == $dom->nodeName) {
@@ -199,8 +197,7 @@ class Crawler_Libertytimes
         return $ret;
     }
 
-    public static function parse2($body)
-    {
+    public static function parse2($body) {
         $body = str_replace('<meta http-equiv="Content-Type" content="text/html; charset=big5" />', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
         $doc = new DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML($body);
@@ -229,4 +226,5 @@ class Crawler_Libertytimes
 
         return $ret;
     }
+
 }

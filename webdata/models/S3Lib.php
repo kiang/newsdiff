@@ -1,14 +1,14 @@
 <?php
 
-class S3Lib
-{
+class S3Lib {
+
     protected static $_obj = null;
-    protected static function getS3Obj()
-    {
+
+    protected static function getS3Obj() {
         if (!class_exists('AmazonS3')) {
             define('AWS_DISABLE_CONFIG_AUTO_DISCOVERY', true);
             include(__DIR__ . '/../stdlibs/sdk-1.6.0/sdk.class.php');
-            if (!getenv('S3_KEY') or !getenv('S3_SECRET')) {
+            if (!getenv('S3_KEY') or ! getenv('S3_SECRET')) {
                 throw new Exception('env S3_KEY & S3_SECRET not found');
             }
             CFCredentials::set(array(
@@ -25,8 +25,7 @@ class S3Lib
         return self::$_obj;
     }
 
-    public function buildIndex($target)
-    {
+    public function buildIndex($target) {
         error_log("build index {$target}");
         $s3 = self::getS3Obj();
 
@@ -44,7 +43,7 @@ class S3Lib
         $total_size = 0;
         $all_last_modified = 0;
 
-        foreach($res->body->CommonPrefixes as $dir) {
+        foreach ($res->body->CommonPrefixes as $dir) {
             $dir = $dir->Prefix;
             if ($dir == $prefix) {
                 continue;
@@ -59,7 +58,7 @@ class S3Lib
             $table_tr[] = "<tr><td><a href=\"" . htmlspecialchars($name) . "\">" . htmlspecialchars($name) . "/</a></td><td>" . date('Y/m/d H:i:s', $last_modified) . "</td><td>{$size}</td></tr>";
         }
 
-        foreach($res->body->Contents as $file) {
+        foreach ($res->body->Contents as $file) {
             if (basename($file->Key) == 'index.html') {
                 continue;
             }
@@ -92,8 +91,7 @@ class S3Lib
         );
     }
 
-    public function putFile($file, $target, $content_type = null)
-    {
+    public function putFile($file, $target, $content_type = null) {
         $s3 = self::getS3Obj();
         if (!preg_match('#s3://([^/]*)/(.*)#', $target, $matches)) {
             throw new Exception('must be s3://xxx');
@@ -111,4 +109,5 @@ class S3Lib
 
         $res = $s3->create_object($bucket, $prefix, $options);
     }
+
 }

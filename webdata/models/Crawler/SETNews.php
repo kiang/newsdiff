@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_SETNews
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_SETNews {
+
+    public static function crawl($insert_limit) {
         $content = Crawler::getBody('http://www.setnews.net/');
         preg_match_all('#NewsID=[0-9]*#', $content, $matches);
         $links = array_unique($matches[0]);
@@ -19,8 +18,7 @@ class Crawler_SETNews
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $doc = new DOMDocument('1.0', 'UTF-8');
 
         @$doc->loadHTML($body);
@@ -32,4 +30,5 @@ class Crawler_SETNews
         $ret->body = Crawler::getTextFromDom($doc->getElementById('Content1'));
         return $ret;
     }
+
 }

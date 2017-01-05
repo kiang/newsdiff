@@ -1,13 +1,12 @@
 <?php
 
-class NewInfoRow extends Pix_Table_Row
-{
+class NewInfoRow extends Pix_Table_Row {
+    
 }
 
-class NewsInfo extends Pix_Table
-{
-    public function init()
-    {
+class NewsInfo extends Pix_Table {
+
+    public function init() {
         $this->_name = 'news_info';
         $this->_primary = array('news_id', 'time');
         $this->_rowClass = 'NewInfoRow';
@@ -17,4 +16,5 @@ class NewsInfo extends Pix_Table
         $this->_columns['title'] = array('type' => 'text');
         $this->_columns['body'] = array('type' => 'text');
     }
+
 }

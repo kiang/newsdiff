@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_Chinatimes
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_Chinatimes {
+
+    public static function crawl($insert_limit) {
         $content = Crawler::getBody('http://www.chinatimes.com');
         $content .= Crawler::getBody('http://www.chinatimes.com/newspapers/'); // 日報精選
         $content .= Crawler::getBody('http://www.chinatimes.com/newspapers/2601'); // 中國時報
@@ -29,8 +28,7 @@ class Crawler_Chinatimes
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         if (preg_match('/抱歉！您所查詢的資料，目前無法找到任何頁面/', $body)) {
             $ret = new StdClass;
             $ret->title = '404';
@@ -39,7 +37,7 @@ class Crawler_Chinatimes
         }
         $doc = new DOMDocument;
         @$doc->loadHTML($body);
-        if (!$pagecontainer_dom= Crawler::getDomByNameAndClass($doc, 'div', 'page_container')) {
+        if (!$pagecontainer_dom = Crawler::getDomByNameAndClass($doc, 'div', 'page_container')) {
             return null;
         }
         $header_dom = $pagecontainer_dom->getElementsByTagName('header')->item(0);
@@ -65,7 +63,7 @@ class Crawler_Chinatimes
                 continue;
             }
             $body .= trim($child_node->nodeValue) . "\n";
-        } 
+        }
         $content .= trim($body) . "\n";
 
         if ($dom = Crawler::getDomByNameAndClass($doc, 'div', 'editorthis')) {
@@ -78,4 +76,5 @@ class Crawler_Chinatimes
         $ret->body = trim($content);
         return $ret;
     }
+
 }

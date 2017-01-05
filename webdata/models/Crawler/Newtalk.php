@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_Newtalk
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_Newtalk {
+
+    public static function crawl($insert_limit) {
         $content = Crawler::getBody('http://newtalk.tw');
         $content .= Crawler::getBody('http://newtalk.tw/rss/all');
         for ($i = 1; $i <= 5; $i ++) {
@@ -23,8 +22,7 @@ class Crawler_Newtalk
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $doc = new DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML($body);
         $ret = new StdClass;

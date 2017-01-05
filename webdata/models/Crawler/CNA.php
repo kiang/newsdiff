@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_CNA
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_CNA {
+
+    public static function crawl($insert_limit) {
         // http://www.cna.com.tw/News/aCN/201308130087-1.aspx
         // http://www.cna.com.tw/Topic/Popular/3907-1/201308130021-1.aspx
         $content = Crawler::getBody('http://www.cna.com.tw/');
@@ -22,11 +21,9 @@ class Crawler_CNA
             }
         }
         return array($update, $insert);
-
     }
 
-    public static function parse($body, $url)
-    {
+    public static function parse($body, $url) {
         if (preg_match('/<title>404<\/title>/', $body)) {
             $ret = new StdClass;
             $ret->title = '404';
@@ -64,20 +61,22 @@ class Crawler_CNA
 
         foreach ($doc->getElementsByTagName('div') as $div_dom) {
             if ($div_dom->getAttribute('class') == 'news_content') {
-            } elseif ($div_dom->getAttribute('class') == 'news_content_new'){
+                
+            } elseif ($div_dom->getAttribute('class') == 'news_content_new') {
+                
             } elseif ($div_dom->getAttribute('class') == 'news_title') {
                 $ret->title = $div_dom->getElementsByTagName('h1')->item(0)->nodeValue;
                 $ret->body = '';
                 $dom = $div_dom;
                 while ($dom = $dom->nextSibling) {
-                    if ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'update_times') { 
+                    if ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'update_times') {
                         $ret->body .= $dom->getElementsByTagName('p')->item(0)->nodeValue . "\n";
                         $ret->body .= $dom->getElementsByTagName('p')->item(1)->nodeValue . "\n";
                         continue;
-                    } elseif ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'article_box') { 
+                    } elseif ($dom->nodeType == XML_ELEMENT_NODE and $dom->getAttribute('class') == 'article_box') {
                         $ret->body .= Crawler::getTextFromDom($dom);
                         break;
-                    } 
+                    }
                 }
                 return $ret;
             } else {
@@ -108,4 +107,5 @@ class Crawler_CNA
 
         return $ret;
     }
+
 }

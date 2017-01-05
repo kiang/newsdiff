@@ -1,9 +1,8 @@
 <?php
 
-class ErrorController extends Pix_Controller
-{
-    public function errorAction()
-    {
+class ErrorController extends Pix_Controller {
+
+    public function errorAction() {
         if ($this->view->exception instanceof Pix_Controller_Dispatcher_Exception) {
             header("HTTP/1.0 404 Not Found");
             echo '404';
@@ -14,7 +13,8 @@ class ErrorController extends Pix_Controller
         }
     }
 
-    public function notfoundAction()
-    {
+    public function notfoundAction() {
+        
     }
+
 }

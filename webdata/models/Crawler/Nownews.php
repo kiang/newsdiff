@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_Nownews
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_Nownews {
+
+    public static function crawl($insert_limit) {
         $content = Crawler::getBody('http://www.nownews.com');
 
         preg_match_all('#href="(\/n/\d\d\d\d/\d\d/\d\d/\d+)"#', $content, $matches);
@@ -18,8 +17,8 @@ class Crawler_Nownews
         }
         return array($update, $insert);
     }
-    public static function parse($body)
-    {
+
+    public static function parse($body) {
         $body = mb_convert_encoding($body, 'HTML-ENTITIES', "UTF-8");
         $doc = new DOMDocument('1.0', 'UTF-8');
         // 移除掉關鍵字的部份
@@ -46,7 +45,7 @@ class Crawler_Nownews
             }
         }
 
-        if (!$ret->title and !$ret->body) { // 可能是星光大道類型
+        if (!$ret->title and ! $ret->body) { // 可能是星光大道類型
             foreach ($doc->getElementsByTagName('div') as $div_dom) {
                 if (in_array($div_dom->getAttribute('class'), array('news_story', 'ws_index_main_story'))) {
                     $ret->title = $div_dom->getElementsByTagName('h1')->item(0)->nodeValue;
@@ -58,7 +57,7 @@ class Crawler_Nownews
             }
         }
 
-        if (!$ret->title and !$ret->body and $div_dom = $doc->getElementById('news_container')) {
+        if (!$ret->title and ! $ret->body and $div_dom = $doc->getElementById('news_container')) {
             $ret->title = $div_dom->getElementsByTagName('h1')->item(0)->nodeValue;
             foreach ($div_dom->getElementsByTagName('div') as $child_div_dom) {
                 if ($child_div_dom->getAttribute('class') == 'news_story') {
@@ -67,7 +66,7 @@ class Crawler_Nownews
             }
         }
 
-        if ((!$ret->title or !$ret->body) and $div_dom = $doc->getElementById('report_file_story')) {
+        if ((!$ret->title or ! $ret->body) and $div_dom = $doc->getElementById('report_file_story')) {
             $ret->title = $div_dom->getElementsByTagName('h1')->item(0)->nodeValue;
             foreach ($div_dom->getElementsByTagName('div') as $child_div_dom) {
                 if ($child_div_dom->getAttribute('class') == 'story_content') {
@@ -103,14 +102,14 @@ class Crawler_Nownews
                 $url = $m[2];
             }
             return 'http://' . $url . "\n";
-
         }, $ret->body);
 
-        $ret->body = preg_replace_callback('#/[^/]*x[_0-9a-z]*\.jpg#i', function($m){
+        $ret->body = preg_replace_callback('#/[^/]*x[_0-9a-z]*\.jpg#i', function($m) {
             return preg_replace('#/[^/]*x#', '/', $m[0]);
         }, $ret->body);
 
         $ret->body = trim($ret->body);
         return $ret;
     }
+
 }

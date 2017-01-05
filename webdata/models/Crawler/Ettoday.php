@@ -1,9 +1,8 @@
 <?php
 
-class Crawler_Ettoday
-{
-    public static function crawl($insert_limit)
-    {
+class Crawler_Ettoday {
+
+    public static function crawl($insert_limit) {
         // http://www.ettoday.net/news/20130813/255848.htm
         $content = Crawler::getBody('http://www.ettoday.net');
         $content .= Crawler::getBody('http://feeds.feedburner.com/ettoday/realtime');
@@ -21,8 +20,7 @@ class Crawler_Ettoday
         return array($update, $insert);
     }
 
-    public static function parse($body)
-    {
+    public static function parse($body) {
         $body = str_replace('<meta charset="utf-8">', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>', $body);
 
         $doc = new DOMDocument('1.0', 'UTF-8');
@@ -78,4 +76,5 @@ class Crawler_Ettoday
 
         return $ret;
     }
+
 }
