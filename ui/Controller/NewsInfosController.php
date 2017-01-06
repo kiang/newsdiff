@@ -30,7 +30,6 @@ class NewsInfosController extends AppController {
                 ),
             ),
             'limit' => 50,
-            'group' => array('NewsInfo.news_id'),
             'order' => array('NewsInfo.time' => 'DESC'),
         );
         $this->set('items', $this->paginate($this->NewsInfo));
