@@ -6,7 +6,7 @@ class NewsInfosController extends AppController {
 
     public $name = 'NewsInfos';
     public $paginate = array();
-    public $helpers = array();
+    public $helpers = array('Olc');
 
     function index() {
         $this->paginate['NewsInfo'] = array(
@@ -24,7 +24,14 @@ class NewsInfosController extends AppController {
 
     function admin_index() {
         $this->paginate['NewsInfo'] = array(
-            'limit' => 20,
+            'contain' => array(
+                'News' => array(
+                    'fields' => array('url', 'source'),
+                ),
+            ),
+            'limit' => 50,
+            'group' => array('NewsInfo.news_id'),
+            'order' => array('NewsInfo.time' => 'DESC'),
         );
         $this->set('items', $this->paginate($this->NewsInfo));
     }
