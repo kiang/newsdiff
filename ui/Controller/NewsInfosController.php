@@ -7,6 +7,13 @@ class NewsInfosController extends AppController {
     public $name = 'NewsInfos';
     public $paginate = array();
     public $helpers = array('Olc');
+    
+    public function beforeFilter() {
+        parent::beforeFilter();
+        if (isset($this->Auth)) {
+            $this->Auth->allow('*');
+        }
+    }
 
     function index() {
         $this->paginate['NewsInfo'] = array(
