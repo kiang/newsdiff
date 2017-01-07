@@ -8,8 +8,32 @@ class NewsInfosController extends AppController {
     public $paginate = array();
     public $helpers = array('Olc');
 
-    function admin_index() {
+    function admin_index($source = 0) {
+        $keywords = $conditions = array();
+        if (isset($this->request->query['keyword'])) {
+            $keywords = preg_split('/\\s+/', $this->request->query['keyword']);
+            foreach ($keywords AS $k => $v) {
+                if (empty($v)) {
+                    unset($keywords[$k]);
+                }
+            }
+            $keywords = array_unique($keywords);
+            if (!empty($keywords)) {
+                $conditions['AND'] = array();
+                foreach ($keywords AS $keyword) {
+                    $conditions['AND'][] = array('OR' => array(
+                            'NewsInfo.title LIKE' => "%{$keyword}%",
+                            'NewsInfo.body LIKE' => "%{$keyword}%",
+                    ));
+                }
+            }
+        }
+        $source = intval($source);
+        if ($source > 0) {
+            $conditions['News.source'] = $source;
+        }
         $this->paginate['NewsInfo'] = array(
+            'conditions' => $conditions,
             'contain' => array(
                 'News' => array(
                     'fields' => array('url', 'source'),
@@ -19,6 +43,8 @@ class NewsInfosController extends AppController {
             'order' => array('NewsInfo.time' => 'DESC'),
         );
         $this->set('items', $this->paginate($this->NewsInfo));
+        $this->set('source', $source);
+        $this->set('keywords', implode(' ', $keywords));
     }
 
     function admin_view($id = null) {

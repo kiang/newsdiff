@@ -45,6 +45,7 @@
                 <?php echo $this->Session->flash(); ?>
                 <div id="viewContent"><?php echo $content_for_layout; ?></div>
             </div>
+            <div class="clearfix"></div>
             <div id="footer">
                 <?php
                 echo $this->Html->link(
