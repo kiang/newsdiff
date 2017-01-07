@@ -1,1 +1,1 @@
-<h2>Sweet, Your application got Baked by CakePHP!</h2>
+<h2>工友無所不在，工友好棒棒。</h2>

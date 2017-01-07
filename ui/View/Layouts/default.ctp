@@ -3,7 +3,7 @@
     <head>
         <?php echo $this->Html->charset(); ?>
         <title>
-            news::
+            經濟部工友處新聞室::
             <?php echo $title_for_layout; ?>
         </title><?php
         echo $this->Html->meta('icon');
@@ -20,18 +20,18 @@
     <body>
         <div class="container">
             <div id="header">
-                <h1><?php echo $this->Html->link('news', '/'); ?></h1>
+                <h1><?php echo $this->Html->link('經濟部工友處新聞室', '/'); ?></h1>
             </div>
             <div id="content">
                 <div class="btn-group">
                     <?php if ($this->Session->read('Auth.User.id')): ?>
                         <?php echo $this->Html->link('新聞', '/admin/news_infos', array('class' => 'btn btn-default')); ?>
                         <?php echo $this->Html->link('標籤', '/admin/tags', array('class' => 'btn btn-default')); ?>
-                        <?php echo $this->Html->link('Members', '/admin/members', array('class' => 'btn btn-default')); ?>
-                        <?php echo $this->Html->link('Groups', '/admin/groups', array('class' => 'btn btn-default')); ?>
-                        <?php echo $this->Html->link('Logout', '/members/logout', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('帳號', '/admin/members', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('群組', '/admin/groups', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('登出', '/members/logout', array('class' => 'btn btn-default')); ?>
                     <?php else: ?>
-                        <?php echo $this->Html->link('Login', '/members/login', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('登入', '/members/login', array('class' => 'btn btn-default')); ?>
                     <?php endif; ?>
                     <?php
                     if (!empty($actions_for_layout)) {
