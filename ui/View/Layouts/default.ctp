@@ -25,7 +25,8 @@
             <div id="content">
                 <div class="btn-group">
                     <?php if ($this->Session->read('Auth.User.id')): ?>
-                        <?php echo $this->Html->link('news', '/admin/news_infos', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('新聞', '/admin/news_infos', array('class' => 'btn btn-default')); ?>
+                        <?php echo $this->Html->link('標籤', '/admin/tags', array('class' => 'btn btn-default')); ?>
                         <?php echo $this->Html->link('Members', '/admin/members', array('class' => 'btn btn-default')); ?>
                         <?php echo $this->Html->link('Groups', '/admin/groups', array('class' => 'btn btn-default')); ?>
                         <?php echo $this->Html->link('Logout', '/members/logout', array('class' => 'btn btn-default')); ?>
