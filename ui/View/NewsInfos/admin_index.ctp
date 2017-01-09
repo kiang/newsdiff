@@ -25,6 +25,9 @@ if (!isset($url)) {
     <?php
     $i = 0;
     foreach ($items as $item) {
+        if(strlen($item['NewsInfo']['body']) < 20) {
+            continue;
+        }
         ?>
         <div class="col-md-12">
             <div class="pull-right"><?php echo date('Y-m-d H:i:s', $item['NewsInfo']['time']); ?> / <?php echo $this->Olc->sources[$item['News']['source']]; ?></div>
