@@ -19,7 +19,7 @@ class Crawler {
     }
 
     public static function roundRobinURL($url) {
-        if (!preg_match('#(https?://)([^/]*)(.*)#', $url, $matches)) {
+        if (!preg_match('#(http?://)([^/]*)(.*)#', $url, $matches)) {
             return array($url, null);
         }
         $host = $matches[2];

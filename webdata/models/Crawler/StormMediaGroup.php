@@ -34,10 +34,20 @@ class Crawler_StormMediaGroup {
     public static function parse($body) {
         $ret = new StdClass;
         $doc = new DOMDocument('1.0', 'UTF-8');
-        @$doc->loadHTML(str_replace('<meta charset="UTF-8">', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body));
+        $body = str_ireplace('<meta charest="utf-8">', '<meta charest="utf-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
+        $body = str_replace('<html lang="zh-TW">', '<html lang="zh-TW"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
+
+
+        @$doc->loadHTML($body);
 
         $ret->title = trim($doc->getElementById('article_title')->nodeValue);
-        $ret->body = trim($doc->getElementsByTagName('article')->item(0)->nodeValue);
+        $ret->body = '';
+        foreach ($doc->getElementsByTagName('article')->item(0)->childNodes as $node) {
+            if ($node->nodeName == 'div' and $node->getAttribute('class') == 'clear-float') {
+                break;
+            }
+            $ret->body = trim($ret->body . "\n" . Crawler::getTextFromDom($node));
+        }
 
         return $ret;
     }

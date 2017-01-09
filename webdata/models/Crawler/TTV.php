@@ -35,7 +35,7 @@ class Crawler_TTV {
         $blocks = array();
         $doms = $doc->getElementsByTagName('div');
         foreach ($doms AS $dom) {
-            if ($dom->getAttribute('class') === 'content') {
+            if ($dom->getAttribute('class') === 'br') {
                 $blocks[] = trim(Crawler::getTextFromDom($dom));
             }
         }

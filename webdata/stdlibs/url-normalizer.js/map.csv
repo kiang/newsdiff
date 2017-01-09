@@ -18,6 +18,7 @@ newtalk.tw,'^/news/view/[0-9]*-[0-9]*-[0-9]*/([0-9]*)',http://newtalk.tw${0},new
 www.nownews.com,'^/n/[0-9]*/[0-9]*/[0-9]*/([0-9]*)',http://www.nownews.com{$0},www.nownews.com/{$1}
 www.cna.com.tw,'^/News/a[^/]*/([0-9]*-[0-9]*)\.aspx'i,http://www.cna.com.tw/News/aAll/{$1}.aspx,www.cna.com.tw/aAll/{$1}
 www.cna.com.tw,'^/news/todayinhistory/([0-9]*-[0-9]*)\.aspx',http://www.cna.com.tw/news/todayinhistory/{$1}.aspx,www.cna.com.tw/todayinhistory/{$1}
+www.cna.com.tw,'^/news/gpho/([0-9]*-[0-9]*)\.aspx',http://www.cna.com.tw/news/gpho/{$1}.aspx,www.cna.com.tw/gpho/{$1}
 www.cna.com.tw,'^/News/firstnews/([0-9]*-[0-9]*)\.aspx'i,http://www.cna.com.tw/News/firstnews/{$1}.aspx,www.cna.com.tw/firstnews/{$1}
 www.cna.com.tw,'^/Topic/Popular/[^/]*/([0-9]*-[0-9]*)\.aspx'i,http://www.cna.com.tw/News/firstnews/{$1}.aspx,www.cna.com.tw/firstnews/{$1}
 www.chinatimes.com,'^/(newspapers|realtimenews)/(.*-)?([0-9]*)-([0-9]*)',http://www.chinatimes.com/{$1}/{$3}-{$4},www.chinatimes.com/{$1}/{$3}/{$4}
@@ -35,3 +36,4 @@ www.youtube.com,'^/watch',https://www.youtube.com/watch?v={$v},www.youtube.com/w
 www.youtube.com,'^/embed',https://www.youtube.com/watch?v={$v},www.youtube.com/watch?v={$v}
 www.stormmediagroup.com,'^/opencms',http://www.stormmediagroup.com/opencms/news/detail/{$uuid}/?uuid={$uuid},stormmediagroup/{$uuid}
 www.storm.mg,'^/article/([0-9]*)',http://www.storm.mg/article/{$1},storm/{$1}
+www.thenewslens.com,'^/article/([0-9]*)',https://www.thenewslens.com,www.thenewslens.com/article/{$1}
