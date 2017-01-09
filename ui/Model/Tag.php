@@ -39,5 +39,21 @@ class Tag extends AppModel {
             'finderQuery' => '',
         )
     );
+    
+    public $hasMany = array(
+        'NewsTag' => array(
+            'className' => 'NewsTag',
+            'foreignKey' => 'tag_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
+    );
 
 }
