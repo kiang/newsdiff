@@ -6,7 +6,7 @@ if (!isset($url)) {
 <div id="TagsAdminIndex">
     <h2>標籤</h2>
     <div class="btn-group">
-        <?php echo $this->Html->link(__('Add', true), array('action' => 'add'), array('class' => 'btn btn-default dialogControl')); ?>
+        <?php echo $this->Html->link('新增', array('action' => 'add'), array('class' => 'btn btn-default dialogControl')); ?>
     </div>
     <div><?php
         echo $this->Paginator->counter(array(
@@ -17,10 +17,10 @@ if (!isset($url)) {
     <table class="table table-bordered" id="TagsAdminIndexTable">
         <thead>
             <tr>
-                <th><?php echo $this->Paginator->sort('Tag.name', 'Name', array('url' => $url)); ?></th>
-                <th><?php echo $this->Paginator->sort('Tag.count', 'Count', array('url' => $url)); ?></th>
-                <th><?php echo $this->Paginator->sort('Tag.created', 'Created', array('url' => $url)); ?></th>
-                <th class="actions"><?php echo __('Action', true); ?></th>
+                <th><?php echo $this->Paginator->sort('Tag.name', '標籤', array('url' => $url)); ?></th>
+                <th><?php echo $this->Paginator->sort('Tag.count', '數量', array('url' => $url)); ?></th>
+                <th><?php echo $this->Paginator->sort('Tag.created', '時間', array('url' => $url)); ?></th>
+                <th class="actions">操作</th>
             </tr>
         </thead>
         <tbody>
@@ -43,14 +43,13 @@ if (!isset($url)) {
                     <td><?php
                         echo $item['Tag']['created'];
                         ?></td>
-            <div class="btn-group">
-                <?php echo $this->Html->link(__('View', true), array('action' => 'view', $item['Tag']['id']), array('class' => 'btn btn-default dialogControl')); ?>
-                <?php echo $this->Html->link(__('Edit', true), array('action' => 'edit', $item['Tag']['id']), array('class' => 'btn btn-default dialogControl')); ?>
-                <?php echo $this->Html->link(__('Delete', true), array('action' => 'delete', $item['Tag']['id']), array('class' => 'btn btn-default'), __('Delete the item, sure?', true)); ?>
-            </div>
-            </td>
-            </tr>
-        <?php } // End of foreach ($items as $item) {  ?>
+                    <td>
+                        <div class="btn-group">
+                            <?php echo $this->Html->link('刪除', array('action' => 'delete', $item['Tag']['id']), array('class' => 'btn btn-default'), __('Delete the item, sure?', true)); ?>
+                        </div>
+                    </td>
+                </tr>
+            <?php } // End of foreach ($items as $item) {  ?>
         </tbody>
     </table>
     <div class="paging"><?php echo $this->element('paginator'); ?></div>
