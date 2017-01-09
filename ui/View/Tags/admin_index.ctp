@@ -8,11 +8,6 @@ if (!isset($url)) {
     <div class="btn-group">
         <?php echo $this->Html->link('新增', array('action' => 'add'), array('class' => 'btn btn-default dialogControl')); ?>
     </div>
-    <div><?php
-        echo $this->Paginator->counter(array(
-            'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-        ));
-        ?></div>
     <div class="paging"><?php echo $this->element('paginator'); ?></div>
     <table class="table table-bordered" id="TagsAdminIndexTable">
         <thead>
@@ -35,7 +30,7 @@ if (!isset($url)) {
                 <tr<?php echo $class; ?>>
 
                     <td><?php
-                        echo $item['Tag']['name'];
+                        echo $this->Html->link($item['Tag']['name'], '/admin/news_infos/tag/' . $item['Tag']['id']);
                         ?></td>
                     <td><?php
                         echo $item['Tag']['count'];

@@ -47,6 +47,64 @@ class NewsInfosController extends AppController {
         $this->set('keywords', implode(' ', $keywords));
     }
 
+    function admin_tag($tagId = 0) {
+        $tagId = intval($tagId);
+        if ($tagId > 0) {
+            $tag = $this->NewsInfo->News->Tag->find('first', array(
+                'conditions' => array(
+                    'Tag.id' => $tagId,
+                ),
+            ));
+        }
+        if (empty($tag)) {
+            $this->redirect('/admin/tags');
+        }
+        $keywords = array();
+        $conditions = array('NewsTag.tag_id' => $tagId);
+        if (isset($this->request->query['keyword'])) {
+            $keywords = preg_split('/\\s+/', $this->request->query['keyword']);
+            foreach ($keywords AS $k => $v) {
+                if (empty($v)) {
+                    unset($keywords[$k]);
+                }
+            }
+            $keywords = array_unique($keywords);
+            if (!empty($keywords)) {
+                $conditions['AND'] = array();
+                foreach ($keywords AS $keyword) {
+                    $conditions['AND'][] = array('OR' => array(
+                            'NewsInfo.title LIKE' => "%{$keyword}%",
+                            'NewsInfo.body LIKE' => "%{$keyword}%",
+                    ));
+                }
+            }
+        }
+        $this->paginate['NewsInfo'] = array(
+            'conditions' => $conditions,
+            'contain' => array(
+                'News' => array(
+                    'fields' => array('url', 'source'),
+                ),
+            ),
+            'joins' => array(
+                array(
+                    'table' => 'news_tags',
+                    'alias' => 'NewsTag',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'NewsInfo.news_id = NewsTag.news_id',
+                    ),
+                ),
+            ),
+            'limit' => 50,
+            'order' => array('NewsInfo.time' => 'DESC'),
+        );
+        $this->set('items', $this->paginate($this->NewsInfo));
+        $this->set('tag', $tag);
+        $this->set('keywords', implode(' ', $keywords));
+        $this->set('url', array($tagId));
+    }
+
     function admin_view($id = null) {
         if (!$id || !$this->data = $this->NewsInfo->read(null, $id)) {
             $this->Session->setFlash(__('Please do following links in the page', true));
