@@ -20,6 +20,7 @@ class OlcHelper extends AppHelper {
         14 => '民視',
         15 => '三立',
         16 => '風傳媒',
+        17 => '關鍵評論網',
     );
 
 }
