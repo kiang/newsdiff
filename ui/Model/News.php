@@ -53,5 +53,21 @@ class News extends AppModel {
             'counterQuery' => ''
         )
     );
+    
+    public $hasAndBelongsToMany = array(
+        'Tag' => array(
+            'className' => 'Tag',
+            'joinTable' => 'news_tags',
+            'foreignKey' => 'news_id',
+            'associationForeignKey' => 'tag_id',
+            'unique' => 'keepExisting',
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'finderQuery' => '',
+        )
+    );
 
 }
