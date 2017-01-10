@@ -42,7 +42,58 @@ class NewsInfosController extends AppController {
                     ),
                 ),
             ),
+            'joins' => array(
+                array(
+                    'table' => 'news_tags',
+                    'alias' => 'NewsTag',
+                    'type' => 'INNER',
+                    'conditions' => array(
+                        'NewsInfo.news_id = NewsTag.news_id',
+                    ),
+                ),
+            ),
+            'group' => array('NewsInfo.news_id'),
             'limit' => 50,
+            'order' => array('NewsInfo.time' => 'DESC'),
+        );
+        $this->set('items', $this->paginate($this->NewsInfo));
+        $this->set('source', $source);
+        $this->set('keywords', implode(' ', $keywords));
+    }
+    
+    function admin_all($source = 0) {
+        $keywords = $conditions = array();
+        if (isset($this->request->query['keyword'])) {
+            $keywords = preg_split('/\\s+/', $this->request->query['keyword']);
+            foreach ($keywords AS $k => $v) {
+                if (empty($v)) {
+                    unset($keywords[$k]);
+                }
+            }
+            $keywords = array_unique($keywords);
+            if (!empty($keywords)) {
+                $conditions['AND'] = array();
+                foreach ($keywords AS $keyword) {
+                    $conditions['AND'][] = array('OR' => array(
+                            'NewsInfo.title LIKE' => "%{$keyword}%",
+                            'NewsInfo.body LIKE' => "%{$keyword}%",
+                    ));
+                }
+            }
+        }
+        $source = intval($source);
+        if ($source > 0) {
+            $conditions['News.source'] = $source;
+        }
+        $this->paginate['NewsInfo'] = array(
+            'conditions' => $conditions,
+            'contain' => array(
+                'News' => array(
+                    'fields' => array('id', 'url', 'source'),
+                ),
+            ),
+            'limit' => 50,
+            'group' => array('NewsInfo.news_id'),
             'order' => array('NewsInfo.time' => 'DESC'),
         );
         $this->set('items', $this->paginate($this->NewsInfo));
