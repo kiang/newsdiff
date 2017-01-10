@@ -20,7 +20,10 @@ if (!isset($url)) {
             <a class="input-group-addon btn btn-primary btn-search" href="#">搜尋</a>
         </div>
         <div class="paging col-md-6">
-            <?php echo $this->Html->link('標籤新聞', '/admin/news_infos/index', array('class' => 'btn btn-default')); ?>
+            <div class="btn-group">
+                <?php echo $this->Html->link('標籤新聞', '/admin/news_infos/index', array('class' => 'btn btn-default')); ?>
+                <?php echo $this->Html->link('報表', '/admin/news_infos/report', array('class' => 'btn btn-default')); ?>
+            </div>
             <div class="pull-right"><?php echo $this->element('paginator'); ?></div></div>
     </div>
 

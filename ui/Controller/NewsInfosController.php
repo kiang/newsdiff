@@ -60,7 +60,7 @@ class NewsInfosController extends AppController {
         $this->set('source', $source);
         $this->set('keywords', implode(' ', $keywords));
     }
-    
+
     function admin_all($source = 0) {
         $keywords = $conditions = array();
         if (isset($this->request->query['keyword'])) {
@@ -202,6 +202,85 @@ class NewsInfosController extends AppController {
             $this->Session->setFlash(__('The data has been deleted', true));
         }
         $this->redirect(array('action' => 'index'));
+    }
+
+    function admin_report($print = false) {
+        if ($print) {
+            $this->layout = 'print';
+        }
+        if (!empty($this->request->query['dateBegin']) && !empty($this->request->query['dateEnd'])) {
+            $timeBegin = strtotime($this->request->query['dateBegin'] . ' 00:00:00');
+            $timeEnd = strtotime($this->request->query['dateEnd'] . ' 23:59:59');
+            if ($timeEnd < $timeBegin) {
+                $t = $timeBegin;
+                $timeBegin = $timeEnd;
+                $timeEnd = $t;
+            }
+            $tags = $this->NewsInfo->News->Tag->find('list');
+            $items = $this->NewsInfo->News->find('all', array(
+                'fields' => array(
+                    'id', 'url', 'source', 'created_at',
+                ),
+                'conditions' => array(
+                    'News.created_at >=' => $timeBegin,
+                    'News.created_at <=' => $timeEnd,
+                    'News.error_count' => 0,
+                ),
+                'contain' => array(
+                    'NewsTag' => array(
+                        'fields' => array('tag_id'),
+                    ),
+                ),
+                'joins' => array(
+                    array(
+                        'table' => 'news_tags',
+                        'alias' => 'Tag',
+                        'type' => 'INNER',
+                        'conditions' => array(
+                            'News.id = Tag.news_id',
+                        ),
+                    ),
+                ),
+                'order' => array('News.created_at' => 'DESC'),
+            ));
+            $items = Set::combine($items, '{n}.News.id', '{n}');
+            $tagMap = array();
+            foreach ($items AS $item) {
+                foreach ($item['NewsTag'] AS $newsTag) {
+                    if (!isset($tagMap[$newsTag['tag_id']])) {
+                        $tagMap[$newsTag['tag_id']] = array(
+                            'tag_id' => $newsTag['tag_id'],
+                            'count' => 0,
+                            'news' => array(),
+                        );
+                    }
+                    ++$tagMap[$newsTag['tag_id']]['count'];
+                    $tagMap[$newsTag['tag_id']]['news'][$newsTag['news_id']] = $newsTag['news_id'];
+                }
+            }
+            usort($tagMap, array('NewsInfosController', 'cmp'));
+            $titles = $this->NewsInfo->find('list', array(
+                'fields' => array('news_id', 'title'),
+                'conditions' => array(
+                    'news_id' => Set::extract('{n}.News.id', $items),
+                ),
+                'group' => array('news_id'),
+                'order' => array('time' => 'DESC'),
+            ));
+            $this->set('items', $items);
+            $this->set('tags', $tags);
+            $this->set('titles', $titles);
+            $this->set('tagMap', $tagMap);
+        } else {
+            $timeBegin = $timeEnd = time();
+        }
+        $this->set('isPrint', $print);
+        $this->set('dateBegin', date('Y-m-d', $timeBegin));
+        $this->set('dateEnd', date('Y-m-d', $timeEnd));
+    }
+
+    static function cmp($a, $b) {
+        return ($a['count'] < $b['count']) ? +1 : -1;
     }
 
 }
