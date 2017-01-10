@@ -12,13 +12,14 @@ App::uses('AppController', 'Controller');
  */
 class TagsController extends AppController {
 
-    /**
-     * Components
-     *
-     * @var array
-     */
-    public $components = array('Paginator', 'Session', 'Flash');
+    public $name = 'Tags';
     public $paginate = array();
+    public $components = array(
+        'Paginator' => array(
+            'limit' => 50,
+            'order' => array('Tag.created' => 'DESC'),
+        ),
+    );
 
     /**
      * admin_index method
@@ -26,11 +27,6 @@ class TagsController extends AppController {
      * @return void
      */
     public function admin_index() {
-        $this->Tag->recursive = 0;
-        $this->paginate['Tag'] = array(
-            'limit' => 50,
-            'order' => array('Tag.created' => 'DESC'),
-        );
         $this->set('items', $this->Paginator->paginate($this->Tag));
     }
 
