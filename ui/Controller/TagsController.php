@@ -18,6 +18,7 @@ class TagsController extends AppController {
      * @var array
      */
     public $components = array('Paginator', 'Session', 'Flash');
+    public $paginate = array();
 
     /**
      * admin_index method
@@ -26,7 +27,11 @@ class TagsController extends AppController {
      */
     public function admin_index() {
         $this->Tag->recursive = 0;
-        $this->set('items', $this->Paginator->paginate());
+        $this->paginate['Tag'] = array(
+            'limit' => 50,
+            'order' => array('Tag.created' => 'DESC'),
+        );
+        $this->set('items', $this->Paginator->paginate($this->Tag));
     }
 
     /**
