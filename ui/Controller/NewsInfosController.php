@@ -36,7 +36,10 @@ class NewsInfosController extends AppController {
             'conditions' => $conditions,
             'contain' => array(
                 'News' => array(
-                    'fields' => array('url', 'source'),
+                    'fields' => array('id', 'url', 'source'),
+                    'Tag' => array(
+                        'fields' => array('id', 'name'),
+                    ),
                 ),
             ),
             'limit' => 50,

@@ -19,6 +19,7 @@ class TagsController extends AppController {
             'limit' => 50,
             'order' => array('Tag.created' => 'DESC'),
         ),
+        'Flash',
     );
 
     /**

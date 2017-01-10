@@ -25,16 +25,25 @@ if (!isset($url)) {
     <?php
     $i = 0;
     foreach ($items as $item) {
-        if(strlen($item['NewsInfo']['body']) < 20) {
+        if (strlen($item['NewsInfo']['body']) < 20) {
             continue;
         }
         ?>
         <div class="col-md-12">
             <div class="pull-right"><?php echo date('Y-m-d H:i:s', $item['NewsInfo']['time']); ?> / <?php echo $this->Olc->sources[$item['News']['source']]; ?></div>
             <h4><a href="<?php echo $item['News']['url']; ?>" target="_blank"><?php echo $item['NewsInfo']['title']; ?></a></h4>
+            <div><?php
+                if (!empty($item['News']['Tag'])) {
+                    echo '<div class="btn-group">';
+                    foreach ($item['News']['Tag'] AS $tag) {
+                        echo $this->Html->link($tag['name'], '/admin/news_infos/tag/' . $tag['id'], array('class' => 'btn btn-default'));
+                    }
+                    echo '</div>';
+                }
+                ?></div>
             <p class="bg-info"><?php echo nl2br(strip_tags($item['NewsInfo']['body'])); ?></p>
         </div>
-    <?php } // End of foreach ($items as $item) {  ?>
+    <?php } // End of foreach ($items as $item) {   ?>
     <div class="paging pull-right"><?php echo $this->element('paginator'); ?></div>
 </div>
 <script>
