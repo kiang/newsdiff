@@ -41,7 +41,7 @@ if (!isset($url)) {
                 if (!empty($item['News']['Tag'])) {
                     echo '<div class="btn-group">';
                     foreach ($item['News']['Tag'] AS $tag) {
-                        echo $this->Html->link($tag['name'], '/admin/news_infos/tag/' . $tag['id'], array('class' => 'btn btn-default'));
+                        echo $this->Html->link("{$tag['name']} x {$tag['NewsTag']['count']}", '/admin/news_infos/tag/' . $tag['id'], array('class' => 'btn btn-default'));
                     }
                     echo '</div>';
                 }
