@@ -248,7 +248,7 @@ class NewsInfosController extends AppController {
                 'order' => array('News.created_at' => 'DESC'),
             ));
             $items = Set::combine($items, '{n}.News.id', '{n}');
-            $tagMap = $tagMap2 = array();
+            $tagMap = $tagMap2 = $tagMap3 = array();
             foreach ($items AS $item) {
                 foreach ($item['NewsTag'] AS $newsTag) {
                     if (!isset($tagMap[$newsTag['tag_id']])) {
@@ -263,18 +263,77 @@ class NewsInfosController extends AppController {
                 }
             }
             usort($tagMap, array('NewsInfosController', 'cmp'));
+            /*
+             * extract 20 top tags to look for 3 tags
+             */
+            $baseMap3 = $grouped = array();
+            for ($i = 0; $i < 20; $i++) {
+                $item = array_shift($tagMap);
+                $baseMap3[$item['tag_id']] = $item;
+            }
             $tagMap = Set::combine($tagMap, '{n}.tag_id', '{n}');
 
             $c = new Math_Combinatorics;
-            $combinations = $c->combinations(array_keys($tagMap), 2);
-            $grouped = array();
+            $combinations = $c->combinations(array_keys($baseMap3), 3);
+            foreach ($combinations AS $k => $combination) {
+                $count = 0;
+                foreach ($combination AS $tagId) {
+                    $count += $baseMap3[$tagId]['count'];
+                }
+                $combinations[$k] = array(
+                    'count' => $count,
+                    'tags' => $combination,
+                );
+            }
+            usort($combinations, array('NewsInfosController', 'cmp'));
             foreach ($combinations AS $combination) {
-                $tag1 = array_shift($combination);
-                $tag2 = array_shift($combination);
+                $tag1 = array_shift($combination['tags']);
+                $tag2 = array_shift($combination['tags']);
+                $tag3 = array_shift($combination['tags']);
+                $result = array_intersect($baseMap3[$tag1]['news'], $baseMap3[$tag2]['news'], $baseMap3[$tag3]['news']);
+                if (!empty($result) && count($result) > 1) {
+                    $item = array(
+                        'tags' => array($tag1, $tag2, $tag3),
+                        'count' => count($result),
+                        'news' => $result,
+                    );
+                    $tagMap3[] = $item;
+                    foreach ($result AS $newsId) {
+                        $grouped[$newsId] = $newsId;
+                        unset($baseMap3[$tag1]['news'][$newsId]);
+                        unset($baseMap3[$tag2]['news'][$newsId]);
+                        unset($baseMap3[$tag3]['news'][$newsId]);
+                    }
+                }
+            }
+            usort($tagMap3, array('NewsInfosController', 'cmp'));
+
+            $combinations = $c->combinations(array_keys($tagMap), 2);
+            foreach ($combinations AS $k => $combination) {
+                $count = 0;
+                foreach ($combination AS $tagId) {
+                    $count += $tagMap[$tagId]['count'];
+                }
+                $combinations[$k] = array(
+                    'count' => $count,
+                    'tags' => $combination,
+                );
+            }
+            foreach ($tagMap AS $k => $v) {
+                foreach ($tagMap[$k]['news'] AS $nk => $nid) {
+                    if (isset($grouped[$nid])) {
+                        unset($tagMap[$k]['news'][$nk]);
+                    }
+                }
+            }
+            foreach ($combinations AS $combination) {
+                $tag1 = array_shift($combination['tags']);
+                $tag2 = array_shift($combination['tags']);
                 $result = array_intersect($tagMap[$tag1]['news'], $tagMap[$tag2]['news']);
-                if (!empty($result)) {
+                if (!empty($result) && count($result) > 1) {
                     $item = array(
                         'tags' => array($tag1, $tag2),
+                        'count' => count($result),
                         'news' => $result,
                     );
                     $tagMap2[] = $item;
@@ -284,6 +343,7 @@ class NewsInfosController extends AppController {
                     }
                 }
             }
+            usort($tagMap2, array('NewsInfosController', 'cmp'));
 
             $titles = $this->NewsInfo->find('list', array(
                 'fields' => array('news_id', 'title'),
@@ -298,6 +358,7 @@ class NewsInfosController extends AppController {
             $this->set('titles', $titles);
             $this->set('tagMap', $tagMap);
             $this->set('tagMap2', $tagMap2);
+            $this->set('tagMap3', $tagMap3);
         } else {
             $timeBegin = $timeEnd = time();
         }
