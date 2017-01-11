@@ -10,14 +10,20 @@
     </div>
     <div class="col-lg-12"><?php
         if (!empty($items)) {
-            foreach ($tagMap AS $tag) {
-                ?><h3><?php echo $tags[$tag['tag_id']]; ?></h3><table class="table table-boarded"><?php
+            foreach ($tagMap2 AS $tag) {
+                ?><h3><?php
+                    $tagTitle = array();
+                    foreach ($tag['tags'] AS $tagId) {
+                        $tagTitle[] = $this->Html->link($tags[$tagId], '/admin/news_infos/tag/' . $tagId);
+                    }
+                    echo implode(',', $tagTitle);
+                    ?></h3><table class="table table-boarded"><?php
                     ksort($tag['news']);
                     foreach ($tag['news'] AS $newsId) {
                         ?><tr>
-                            <td><?php echo $this->Html->link($titles[$newsId], $items[$newsId]['News']['url'], array('target' => '_blank')); ?></td>
-                            <td><?php echo $this->Olc->sources[$items[$newsId]['News']['source']]; ?></td>
-                            <td><?php echo date('Y-m-d H:i:s', $items[$newsId]['News']['created_at']); ?></td>
+                            <td class="col-lg-6"><?php echo $this->Html->link($titles[$newsId], $items[$newsId]['News']['url'], array('target' => '_blank')); ?></td>
+                            <td class="col-lg-2"><?php echo $this->Olc->sources[$items[$newsId]['News']['source']]; ?></td>
+                            <td class="col-lg-4"><?php echo date('Y-m-d H:i:s', $items[$newsId]['News']['created_at']); ?></td>
                         </tr><?php
                     }
                     ?></table><?php

@@ -1,6 +1,10 @@
 <?php
 
 App::uses('AppController', 'Controller');
+/*
+ * pear install Math_Combinatorics
+ */
+require_once 'Math/Combinatorics.php';
 
 class NewsInfosController extends AppController {
 
@@ -244,7 +248,7 @@ class NewsInfosController extends AppController {
                 'order' => array('News.created_at' => 'DESC'),
             ));
             $items = Set::combine($items, '{n}.News.id', '{n}');
-            $tagMap = array();
+            $tagMap = $tagMap2 = array();
             foreach ($items AS $item) {
                 foreach ($item['NewsTag'] AS $newsTag) {
                     if (!isset($tagMap[$newsTag['tag_id']])) {
@@ -259,6 +263,28 @@ class NewsInfosController extends AppController {
                 }
             }
             usort($tagMap, array('NewsInfosController', 'cmp'));
+            $tagMap = Set::combine($tagMap, '{n}.tag_id', '{n}');
+
+            $c = new Math_Combinatorics;
+            $combinations = $c->combinations(array_keys($tagMap), 2);
+            $grouped = array();
+            foreach ($combinations AS $combination) {
+                $tag1 = array_shift($combination);
+                $tag2 = array_shift($combination);
+                $result = array_intersect($tagMap[$tag1]['news'], $tagMap[$tag2]['news']);
+                if (!empty($result)) {
+                    $item = array(
+                        'tags' => array($tag1, $tag2),
+                        'news' => $result,
+                    );
+                    $tagMap2[] = $item;
+                    foreach ($result AS $newsId) {
+                        unset($tagMap[$tag1]['news'][$newsId]);
+                        unset($tagMap[$tag2]['news'][$newsId]);
+                    }
+                }
+            }
+
             $titles = $this->NewsInfo->find('list', array(
                 'fields' => array('news_id', 'title'),
                 'conditions' => array(
@@ -271,6 +297,7 @@ class NewsInfosController extends AppController {
             $this->set('tags', $tags);
             $this->set('titles', $titles);
             $this->set('tagMap', $tagMap);
+            $this->set('tagMap2', $tagMap2);
         } else {
             $timeBegin = $timeEnd = time();
         }
