@@ -43,7 +43,7 @@ if (!isset($url)) {
     <div class="paging pull-right"><?php echo $this->element('paginator'); ?></div>
 </div>
 <script>
-    var currentBase = '<?php echo $this->Html->url(array('action' => 'index', $source)); ?>';
+    var currentBase = '<?php echo $this->Html->url(array('action' => 'all', $source)); ?>';
     $(function () {
         $('a.btn-search').click(function () {
             location.href = currentBase + '?keyword=' + encodeURI($('input.input-search').val());
