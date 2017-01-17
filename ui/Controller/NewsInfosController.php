@@ -63,6 +63,7 @@ class NewsInfosController extends AppController {
         $this->set('items', $this->paginate($this->NewsInfo));
         $this->set('source', $source);
         $this->set('keywords', implode(' ', $keywords));
+        $this->set('url', array($source, '?' => array('keyword' => implode(' ', $keywords))));
     }
 
     function admin_all($source = 0) {
@@ -103,6 +104,7 @@ class NewsInfosController extends AppController {
         $this->set('items', $this->paginate($this->NewsInfo));
         $this->set('source', $source);
         $this->set('keywords', implode(' ', $keywords));
+        $this->set('url', array($source, '?' => array('keyword' => implode(' ', $keywords))));
     }
 
     function admin_tag($tagId = 0) {
