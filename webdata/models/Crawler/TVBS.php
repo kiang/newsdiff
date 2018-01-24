@@ -1,26 +1,25 @@
 <?php
 
-class Crawler_TVBS {
-
-    public static function crawl($insert_limit) {
-        $types = array('news', 'politics', 'local', 'life', 'sports',
-            'entertainment', 'china', 'world', 'tech', 'travel', 'fun');
+class Crawler_TVBS
+{
+    public static function crawl($insert_limit)
+    {
         $urls = array();
-        foreach ($types as $type) {
-            $urls[] = 'http://news.tvbs.com.tw/news/realtime/' . $type;
+        foreach (array('photos', 'politics', 'local', 'money', 'life', 'sports', 'entertainment', 'china', 'world', 'tech', 'travel', 'fun') as $type) {
+            $urls[] = 'http://news.tvbs.com.tw/' . $type;
         }
 
         $content = '';
         foreach ($urls as $url) {
             $content .= Crawler::getBody($url);
         }
-        preg_match_all('#href=[\'"]/(' . implode('|', $types) . ')/([0-9]*)[\'"]#i', $content, $matches);
-        $links = array();
-        $links = array_unique($matches[0]);
+        preg_match_all('#href=\'/?([a-z]+/[0-9]+)\'#', $content, $matches);
+        $links = $matches[1];
+        $links = array_unique($matches[1]);
         $insert = $update = 0;
         foreach ($links as $link) {
             $update ++;
-            $link = 'http://news.tvbs.com.tw' . substr($link, 6, -1);
+            $link = 'http://news.tvbs.com.tw/' . $link;
             $insert += News::addNews($link, 9);
             if ($insert_limit <= $insert) {
                 break;
@@ -34,14 +33,30 @@ class Crawler_TVBS {
         @$doc->loadHTML($body);
         $ret = new StdClass;
 
+        $detail_dom = null;
         foreach ($doc->getElementsByTagName('div') as $div_dom) {
-            switch ($div_dom->getAttribute('class')) {
-                case 'newsdetail-h2':
-                    $ret->title = trim(Crawler::getTextFromDom($div_dom));
-                    break;
-                case 'newsdetail-content':
-                    $ret->body = trim(Crawler::getTextFromDom($div_dom));
-                    break;
+            if ($div_dom->getAttribute('class') == 'newsdetail') {
+                $detail_dom = $div_dom;
+                break;
+            }
+        }
+
+        if (is_null($detail_dom)) {
+            $ret->title = $ret->body = '無法判斷的內容';
+            return $ret;
+        }
+
+        foreach ($detail_dom->childNodes as $child_node) {
+            if ($child_node->nodeName != 'div') {
+                continue;
+            }
+
+            if ($child_node->getAttribute('class') == 'newsdetail-titel') {
+                $ret->title = trim($child_node->nodeValue);
+            }
+
+            if (in_array($child_node->getAttribute('class'), array('newsdetail-time', 'newsdetail-peo', 'newsdetail-img', 'newsdetail-content'))) {
+                $ret->body = trim($ret->body) . "\n" . trim(Crawler::getTextFromDom($child_node));
             }
         }
         return $ret;

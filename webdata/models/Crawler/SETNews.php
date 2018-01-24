@@ -1,8 +1,9 @@
 <?php
 
-class Crawler_SETNews {
-
-    public static function crawl($insert_limit) {
+class Crawler_SETNews
+{
+    public static function crawl($insert_limit)
+    {
         $content = Crawler::getBody('http://www.setn.com/Default.aspx');
         preg_match_all('#NewsID=[0-9]*#', $content, $matches);
         $links = array_unique($matches[0]);

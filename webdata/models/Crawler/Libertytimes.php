@@ -55,7 +55,7 @@ class Crawler_Libertytimes {
             return $ret;
         }
 
-        $body = str_replace('<meta charset="utf-8">', '<meta charset="utf-8"><meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
+        $body = str_replace('<head>', '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
 
         $doc = new DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML($body);
@@ -180,6 +180,22 @@ class Crawler_Libertytimes {
                         if ($dom->getAttribute('class') == 'cont') {
                             $ret->body = trim(Crawler::getTextFromDom($dom));
                             return $ret;
+                        }
+                    }
+                }
+            }
+
+            foreach ($doc->getElementsByTagName('div') as $div_dom) {
+                if ($div_dom->getAttribute('itemprop') == 'articleBody') {
+                    $ret->body = trim(Crawler::getTextFromDom($div_dom));
+                    if ($h1_dom = $doc->getElementsByTagName('h1')->item(0)) {
+                        $text_dom = $h1_dom->childNodes->item(0);
+                        while ($text_dom) {
+                            if ($text_dom->nodeName == '#text') {
+                                $ret->title = trim($text_dom->nodeValue);
+                                return $ret;
+                            }
+                            $text_dom = $text_dom->nextSibling;
                         }
                     }
                 }

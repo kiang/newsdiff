@@ -18,8 +18,9 @@ class Crawler {
         return self::$_record_cache[$host];
     }
 
-    public static function roundRobinURL($url) {
-        if (!preg_match('#(http?://)([^/]*)(.*)#', $url, $matches)) {
+    public static function roundRobinURL($url)
+    {
+        if (!preg_match('#(http://)([^/]*)(.*)#', $url, $matches)) {
             return array($url, null);
         }
         $host = $matches[2];
@@ -144,7 +145,7 @@ class Crawler {
         );
         $total = intval($total);
         $part = intval($part);
-        foreach (News::search("created_at > $now - 86400 AND last_fetch_at < $now - 3600")->order('last_fetch_at ASC') as $news) {
+        foreach (News::search("created_at > $now - 86400 AND (last_fetch_at = 0 OR (last_fetch_at > $now - 86400 AND last_fetch_at < $now - 3600))")->order('last_fetch_at ASC') as $news) {
             if ($total !== 1 and intval($news->source) % $total !== $part) {
                 continue;
             }
@@ -164,10 +165,10 @@ class Crawler {
             }
             $count ++;
         }
+        error_log("fetching $count news...");
         if (!$count) {
             return;
         }
-        error_log("fetching $count news...");
         $start = microtime(true);
 
         $handles = array();
