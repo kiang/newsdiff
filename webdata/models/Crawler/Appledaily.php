@@ -4,19 +4,19 @@ class Crawler_Appledaily {
 
     public static function crawl($insert_limit) {
         $urls = array(
-            'http://www.appledaily.com.tw',
-            'http://www.appledaily.com.tw/appledaily/todayapple',
-            'http://www.appledaily.com.tw/appledaily/article/headline',
-            'http://ent.appledaily.com.tw/',
-            'http://www.appledaily.com.tw/appledaily/article/international',
-            'http://www.appledaily.com.tw/appledaily/article/sports',
-            'http://www.appledaily.com.tw/appledaily/article/supplement',
-            'http://www.appledaily.com.tw/appledaily/article/finance',
-            'http://www.appledaily.com.tw/appledaily/article/property',
-            'http://www.appledaily.com.tw/appledaily/article/forum',
+            'http://tw.appledaily.com/',
+            'https://tw.appledaily.com/appledaily/todayapple',
+            'https://tw.appledaily.com/recommend/realtime',
+            'https://tw.entertainment.appledaily.com/realtime',
+            'https://tw.news.appledaily.com/international/daily/',
+            'https://tw.sports.appledaily.com/daily/',
+            'https://tw.lifestyle.appledaily.com/daily',
+            'https://tw.finance.appledaily.com/daily/',
+            'http://home.appledaily.com.tw/',
+            'https://tw.appledaily.com/forum/daily',
         );
         for ($i = 1; $i < 10; $i ++) {
-            $urls[] = 'http://www.appledaily.com.tw/realtimenews/section/new/' . $i;
+            $urls[] = 'https://tw.appledaily.com/realtimenews/section/new/' . $i;
         }
 
         $content = '';
@@ -32,7 +32,7 @@ class Crawler_Appledaily {
         preg_match_all('#/(appledaily|realtimenews)/article/[^/]*/\d+/[^"]+#', $content, $matches);
         $insert = $update = 0;
         foreach ($matches[0] as $link) {
-            $url = Crawler::standardURL('http://www.appledaily.com.tw' . $link);
+            $url = Crawler::standardURL('https://tw.appledaily.com/' . $link);
             $update ++;
             $insert += News::addNews($url, 1);
             if ($insert_limit <= $insert) {
