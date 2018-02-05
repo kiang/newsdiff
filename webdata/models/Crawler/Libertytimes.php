@@ -3,23 +3,22 @@
 class Crawler_Libertytimes {
 
     public static function crawl($insert_limit) {
-        // http://www.libertytimes.com.tw/2013/new/aug/13/today-t3.htm
-        // http://iservice.libertytimes.com.tw/liveNews/news.php?no=852779&type=%E7%A4%BE%E6%9C%83
-        // http://news.ltn.com.tw/list/BreakingNews 即時新聞
-
-        $categories = array('即時新聞', '政治', '社會', '科技', '國際', '財經', '生活', '體育', '影劇', '趣聞');
-
         $content = '';
-        $url = 'http://news.ltn.com.tw/list/BreakingNews'; // 即時新聞
-        $content .= Crawler::getBody($url, 0.5, false);
+        $categories = array('politics', 'society', 'life', 'world', 'business', 'opinion', 'sports',
+          'entertainment', 'istyle', '3c', 'auto', 'Keelung', 'Taipei', 'NewTaipei', 'Taoyuan', 'HsinchuCity',
+          'HsinchuCounty', 'Miaoli', 'Yilan', 'Hualien', 'Kinmen', 'Lianjiang');
 
-        $url = 'http://news.ltn.com.tw/newspaper'; // 報紙
-        $content .= Crawler::getBody($url, 0.5, false);
+        foreach($categories AS $category) {
+          $url = 'http://news.ltn.com.tw/list/breakingnews/' . $category; // 即時新聞
+          $content .= Crawler::getBody($url, 0.5, false);
+        }
 
-        $categories = array('focus', 'politics', 'society', 'local', 'life', 'opinion', 'world', 'business', 'sports', 'entertainment', 'consumer', 'supplement');
-        foreach ($categories as $category) {
-            $url = 'http://news.ltn.com.tw/section/' . $category;
-            $content .= Crawler::getBody($url, 0.5, false);
+        $categories = array('focus', 'politics', 'society', 'life', 'world', 'business', 'local', 'people',
+          'opinion', 'sports', 'entertainment', 'consumer', 'supplement', 'lifeweekly', 'culture', 'weeklybiz',
+          'ltnrepublic');
+        foreach($categories AS $category) {
+          $url = 'http://news.ltn.com.tw/list/newspaper/' . $category . '/' . date('Ymd'); // 即時新聞
+          $content .= Crawler::getBody($url, 0.5, false);
         }
 
         preg_match_all('#/news/[a-z]*/[a-z]*/[0-9]*#', $content, $matches);
@@ -214,7 +213,7 @@ class Crawler_Libertytimes {
     }
 
     public static function parse2($body) {
-        $body = str_replace('<meta http-equiv="Content-Type" content="text/html; charset=big5" />', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
+        $body = str_replace('<meta charset="utf-8" />', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
         $doc = new DOMDocument('1.0', 'UTF-8');
         @$doc->loadHTML($body);
         $ret = new StdClass;
