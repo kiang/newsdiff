@@ -1,10 +1,9 @@
 <?php
-
 class Crawler_Appledaily {
 
     public static function crawl($insert_limit) {
         $urls = array(
-            'http://tw.appledaily.com/',
+            'https://tw.appledaily.com/',
             'https://tw.appledaily.com/appledaily/todayapple',
             'https://tw.appledaily.com/recommend/realtime',
             'https://tw.entertainment.appledaily.com/realtime',
@@ -29,7 +28,7 @@ class Crawler_Appledaily {
         }
 
 
-        preg_match_all('#/(appledaily|realtimenews)/article/[^/]*/\d+/[^"]+#', $content, $matches);
+        preg_match_all('#https://[^/]+.appledaily.com/[^"]+/\d+/\d+#', $content, $matches);
         $insert = $update = 0;
         foreach ($matches[0] as $link) {
             $url = Crawler::standardURL('https://tw.appledaily.com/' . $link);
