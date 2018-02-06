@@ -58,22 +58,18 @@ class Crawler_Appledaily {
             $ret->title = $ret->body = 404;
             return $ret;
         }
-        $body = str_replace('<meta charset="utf-8" />', '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $body);
-        $doc = new DOMDocument('1.0', 'UTF-8');
-        @$doc->loadHTML($body);
         $ret = new StdClass;
-        $ret->title = trim($doc->getElementById('h1')->nodeValue);
+        $ret->title = '';
         $ret->body = '';
-
-        if ($doc->getElementById('maincontent') and $article_dom = $doc->getElementById('maincontent')->getElementsByTagName('article')->item(0)) {
-            // 廣編特輯
-            $body_dom = null;
-            foreach ($article_dom->getElementsByTagName('div') as $div_dom) {
-                if (strpos($div_dom->getAttribute('class'), 'articulum') !== false) {
-                    $ret->body = trim(Crawler::getTextFromDom($div_dom));
-                    break;
-                }
-            }
+        $pos = strpos($body, '<h1>');
+        if(false !== $pos) {
+          $posEnd = strpos($body, '</h1>', $pos);
+          $ret->title = trim(strip_tags(substr($body, $pos, $posEnd - $pos)));
+        }
+        $pos = strpos($body, '<div class="ndArticle_margin">');
+        if(false !== $pos) {
+          $posEnd = strpos($body, '<iframe allowtransparency', $pos);
+          $ret->body = trim(strip_tags(strtr(substr($body, $pos, $posEnd - $pos), array('<br>' => "\n"))));
         }
         return $ret;
     }
